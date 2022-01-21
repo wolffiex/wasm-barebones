@@ -14,13 +14,17 @@ WebAssembly.instantiateStreaming(fetch("bones.wasm"), importObject).then(m => {
     console.log("add(2,3)", add(2, 3));
 });
 
-function write(key, val) {
-    wasmModule.instance.exports.write(toCString(key), val);
+function write(key, value) {
+    return wasmModule.instance.exports.write(...[key, value].map(toCString));
+}
+
+function read(key) {
+    return fromCString(wasmModule.instance.exports.read(toCString(key)));
 }
 
 function toCString(s) {
     const stringSize = s.length + 1;
-    const p = wasmModule.instance.exports.alloc_cstring(stringSize);
+    const p = wasmModule.instance.exports.alloc_bytes(stringSize);
     const m = new Uint8Array(wasmModule.instance.exports.memory.buffer, p, stringSize);
     for (let i = 0; i < s.length; i++)
         m[i] = s.charCodeAt(i);
