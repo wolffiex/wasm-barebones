@@ -12,10 +12,12 @@ WebAssembly.instantiateStreaming(fetch("bones.wasm"), importObject).then(m => {
     const add = wasmModule.instance.exports.add;
 
     console.log("add(2,3)", add(2, 3));
+    console.log("write('aa','bb')", write('aa', 'bb'));
+    console.log("read('aa')", read('aa'));
 });
 
 function write(key, value) {
-    return wasmModule.instance.exports.write(...[key, value].map(toCString));
+    return !!wasmModule.instance.exports.write(...[key, value].map(toCString));
 }
 
 function read(key) {
