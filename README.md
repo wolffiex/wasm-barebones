@@ -2,7 +2,7 @@
 This project is intended as a minimal example of using Rust to generate WebAssembly that runs in the web browser.
 There are much better ways to do this if you are more concerned with the end result than with how these technologies work.
 In particular, if you haven't already looked at [wasm-bindgen](https://rustwasm.github.io/wasm-bindgen/), you should probably start there.
-This is intended as a demo of the underlying technologies and would need a lot of hardening to be solution worthy of production.
+This example is only intended as a demo of the underlying technologies and would need a lot of hardening to be solution worthy of production.
 See also [this blog post.](http://secretartofscience.com/wasm-getting-started)
 
 To add wasm as a compilation target, use rustup:
