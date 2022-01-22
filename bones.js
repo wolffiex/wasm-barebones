@@ -1,14 +1,14 @@
 var wasmModule = null;
 const importObject = {
     env: {
-        consoleLog: function (p) {
-            console.log("wasm says:", fromCString(p));
+        consoleLog: function (ptr) {
+            console.log("wasm says:", fromCString(ptr));
         }
     }
 }
 
-WebAssembly.instantiateStreaming(fetch("bones.wasm"), importObject).then(m => {
-    wasmModule = m;
+WebAssembly.instantiateStreaming(fetch("bones.wasm"), importObject).then(wm => {
+    wasmModule = wm;
     const add = wasmModule.instance.exports.add;
 
     console.log("add(2,3)", add(2, 3));
@@ -26,19 +26,19 @@ function read(key) {
 
 function toCString(s) {
     const stringSize = s.length + 1;
-    const p = wasmModule.instance.exports.alloc_bytes(stringSize);
-    const m = new Uint8Array(wasmModule.instance.exports.memory.buffer, p, stringSize);
+    const ptr = wasmModule.instance.exports.alloc_bytes(stringSize);
+    const buff = new Uint8Array(wasmModule.instance.exports.memory.buffer, ptr, stringSize);
     for (let i = 0; i < s.length; i++)
-        m[i] = s.charCodeAt(i);
-    m[s.length] = 0;
-    return p;
+        buff[i] = s.charCodeAt(i);
+    buff[s.length] = 0;
+    return ptr;
 }
 
 function fromCString(ptr) {
-    const m = new Uint8Array(wasmModule.instance.exports.memory.buffer, ptr);
+    const buff = new Uint8Array(wasmModule.instance.exports.memory.buffer, ptr);
     let s = "";
-    while (m[s.length] != 0) {
-        s += String.fromCharCode(m[s.length]);
+    while (buff[s.length] != 0) {
+        s += String.fromCharCode(buff[s.length]);
     }
     wasmModule.instance.exports.dealloc_cstring(ptr);
     return s;
