@@ -11,7 +11,7 @@ extern {
 
 #[no_mangle]
 pub fn alloc_bytes(size: i32) -> *mut c_char {
-    let mut buf = vec![0 as u8; size as usize + 1];
+    let mut buf = vec![0 as u8; size as usize];
     let p = buf.as_mut_ptr();
     mem::forget(buf);
     p as *mut c_char
